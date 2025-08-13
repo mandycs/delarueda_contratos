@@ -39,6 +39,13 @@ ENV/
 .env.production
 .env.test
 *.env*
+!.env.example
+
+# Security sensitive files
+test_email.py
+*_password.txt
+*_credentials.txt
+*_secrets.txt
 
 # Database
 *.db
