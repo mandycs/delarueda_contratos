@@ -9,6 +9,7 @@ from .. import auth, crud, models, schemas
 from ..database import get_db
 from ..services.pdf_service import create_professional_pdf
 from ..services.file_service import save_uploaded_file, delete_file_if_exists, CONTRACTS_DIR
+from ..services.email_service import email_service
 
 router = APIRouter(prefix="/contracts", tags=["contracts"])
 
@@ -117,6 +118,20 @@ async def sign_contract(
     db.commit()
     db.refresh(db_contract)
 
+    # Send automatic confirmation email to client
+    if db_contract.client_email:
+        try:
+            await email_service.send_contract_signed_confirmation(
+                to_email=db_contract.client_email,
+                client_name=db_contract.client_name,
+                contract_id=db_contract.id,
+                signed_pdf_path=signed_pdf_path,
+                titulo_diseno=db_contract.titulo_diseno
+            )
+        except Exception as e:
+            # Log the error but don't fail the contract signing
+            print(f"Warning: Failed to send confirmation email: {str(e)}")
+
     return db_contract
 
 
@@ -212,3 +227,78 @@ async def delete_contract(
     delete_file_if_exists(db_contract.design_image_path)
     
     return {"message": "Contract deleted successfully"}
+
+
+@router.post("/{contract_id}/send-invitation")
+async def send_contract_invitation(
+    contract_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_user)
+):
+    """
+    Send email invitation to client for contract signing
+    """
+    db_contract = crud.get_contract(db, contract_id=contract_id)
+    if not db_contract:
+        raise HTTPException(status_code=404, detail="Contract not found")
+    
+    if not db_contract.unsigned_pdf_path:
+        raise HTTPException(status_code=400, detail="Contract PDF not yet generated")
+    
+    if not db_contract.client_email:
+        raise HTTPException(status_code=400, detail="Client email not provided")
+    
+    try:
+        success = await email_service.send_contract_invitation(
+            to_email=db_contract.client_email,
+            client_name=db_contract.client_name,
+            contract_id=db_contract.id,
+            titulo_diseno=db_contract.titulo_diseno
+        )
+        
+        if success:
+            return {"message": "Invitation email sent successfully", "email": db_contract.client_email}
+        else:
+            raise HTTPException(status_code=500, detail="Failed to send invitation email")
+            
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Email service error: {str(e)}")
+
+
+@router.post("/{contract_id}/resend-invitation")
+async def resend_contract_invitation(
+    contract_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_user)
+):
+    """
+    Resend email invitation to client for contract signing
+    """
+    db_contract = crud.get_contract(db, contract_id=contract_id)
+    if not db_contract:
+        raise HTTPException(status_code=404, detail="Contract not found")
+    
+    if not db_contract.unsigned_pdf_path:
+        raise HTTPException(status_code=400, detail="Contract PDF not yet generated")
+    
+    if not db_contract.client_email:
+        raise HTTPException(status_code=400, detail="Client email not provided")
+    
+    if db_contract.signed_pdf_path:
+        raise HTTPException(status_code=400, detail="Contract already signed")
+    
+    try:
+        success = await email_service.send_contract_invitation(
+            to_email=db_contract.client_email,
+            client_name=db_contract.client_name,
+            contract_id=db_contract.id,
+            titulo_diseno=db_contract.titulo_diseno
+        )
+        
+        if success:
+            return {"message": "Invitation email resent successfully", "email": db_contract.client_email}
+        else:
+            raise HTTPException(status_code=500, detail="Failed to resend invitation email")
+            
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Email service error: {str(e)}")

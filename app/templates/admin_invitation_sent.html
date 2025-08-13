@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitación Enviada - {{ titulo_diseno }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #007bff;
+        }
+        .header h1 {
+            color: #007bff;
+            margin: 0;
+            font-size: 28px;
+        }
+        .notification-badge {
+            background-color: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .content h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        .details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .details table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .details td {
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .details td:first-child {
+            font-weight: bold;
+            color: #495057;
+            width: 150px;
+        }
+        .details td:last-child {
+            color: #6c757d;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        .status-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{{ company_name }}</h1>
+            <div class="notification-badge">📧 INVITACIÓN ENVIADA</div>
+        </div>
+        
+        <div class="content">
+            <h2>Notificación del Sistema</h2>
+            <p>Se ha enviado exitosamente una invitación de firma de contrato:</p>
+            
+            <div class="details">
+                <table>
+                    <tr>
+                        <td>Contrato ID:</td>
+                        <td><strong>#{{ contract_id }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Título del Diseño:</td>
+                        <td>{{ titulo_diseno }}</td>
+                    </tr>
+                    <tr>
+                        <td>Cliente:</td>
+                        <td>{{ client_name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Email del Cliente:</td>
+                        <td>{{ client_email }}</td>
+                    </tr>
+                    <tr>
+                        <td>Estado:</td>
+                        <td class="status-success">✅ Invitación enviada exitosamente</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <p>El cliente ha recibido un email con el enlace para firmar el contrato. Recibirás otra notificación cuando el contrato sea firmado.</p>
+        </div>
+        
+        <div class="footer">
+            <p>Este es un email automático del Sistema de Contratos de {{ company_name }}</p>
+            <p>No respondas a este email - es solo informativo</p>
+        </div>
+    </div>
+</body>
+</html>

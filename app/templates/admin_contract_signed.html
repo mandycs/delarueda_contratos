@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrato Firmado - {{ titulo_diseno }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #28a745;
+        }
+        .header h1 {
+            color: #28a745;
+            margin: 0;
+            font-size: 28px;
+        }
+        .notification-badge {
+            background-color: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .success-icon {
+            font-size: 48px;
+            margin: 20px 0;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .content h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        .details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .details table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .details td {
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .details td:first-child {
+            font-weight: bold;
+            color: #495057;
+            width: 150px;
+        }
+        .details td:last-child {
+            color: #6c757d;
+        }
+        .attachment-info {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d4fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        .status-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .priority-high {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{{ company_name }}</h1>
+            <div class="notification-badge">✅ CONTRATO FIRMADO</div>
+            <div class="success-icon">🎉</div>
+        </div>
+        
+        <div class="content">
+            <h2>¡Nuevo Contrato Firmado!</h2>
+            
+            <div class="priority-high">
+                <strong>⚠️ ACCIÓN REQUERIDA:</strong> Un cliente ha firmado un contrato. Revisa los detalles y toma las acciones necesarias.
+            </div>
+            
+            <div class="details">
+                <table>
+                    <tr>
+                        <td>Contrato ID:</td>
+                        <td><strong>#{{ contract_id }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Título del Diseño:</td>
+                        <td>{{ titulo_diseno }}</td>
+                    </tr>
+                    <tr>
+                        <td>Cliente:</td>
+                        <td>{{ client_name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Email del Cliente:</td>
+                        <td>{{ client_email }}</td>
+                    </tr>
+                    <tr>
+                        <td>Estado:</td>
+                        <td class="status-success">✅ Contrato firmado completamente</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="attachment-info">
+                <strong>📎 Adjunto incluido:</strong><br>
+                El PDF firmado del contrato está adjunto a este email para tu archivo y revisión.
+            </div>
+            
+            <p><strong>Próximos pasos sugeridos:</strong></p>
+            <ul>
+                <li>Revisar el contrato firmado adjunto</li>
+                <li>Archivar el documento en el sistema de gestión</li>
+                <li>Iniciar el proceso de diseño si corresponde</li>
+                <li>Confirmar recepción con el cliente si es necesario</li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>Este es un email automático del Sistema de Contratos de {{ company_name }}</p>
+            <p>No respondas a este email - es solo informativo</p>
+        </div>
+    </div>
+</body>
+</html>

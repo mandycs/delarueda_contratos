@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrato Firmado Exitosamente</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .header h1 {
+            color: #28a745;
+            margin: 0;
+            font-size: 28px;
+        }
+        .company-name {
+            color: #3498db;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 5px;
+        }
+        .success-badge {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #c3e6cb;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .contract-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+            margin: 20px 0;
+        }
+        .contract-info h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+        }
+        .contract-info p {
+            margin: 5px 0;
+            color: #6c757d;
+        }
+        .next-steps {
+            background-color: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #bee5eb;
+            margin: 20px 0;
+        }
+        .next-steps h4 {
+            color: #0c5460;
+            margin: 0 0 15px 0;
+        }
+        .next-steps ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .next-steps li {
+            margin-bottom: 8px;
+            color: #155724;
+        }
+        .attachment-notice {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .attachment-notice h4 {
+            color: #856404;
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .attachment-notice p {
+            color: #856404;
+            margin: 0;
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+            font-size: 14px;
+            color: #6c757d;
+            text-align: center;
+        }
+        .contact-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .contact-info h4 {
+            color: #2c3e50;
+            margin: 0 0 15px 0;
+        }
+        .contact-info p {
+            color: #6c757d;
+            margin: 5px 0;
+        }
+        .signature-details {
+            font-size: 12px;
+            color: #6c757d;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✅ Contrato Firmado</h1>
+            <div class="company-name">{{ company_name }}</div>
+        </div>
+
+        <div class="success-badge">
+            🎉 ¡Contrato firmado exitosamente!
+        </div>
+
+        <div class="content">
+            <div class="greeting">
+                Hola <strong>{{ client_name }}</strong>,
+            </div>
+
+            <p>¡Excelente! Tu contrato ha sido firmado correctamente y ya está completamente procesado. Gracias por confiar en nuestros servicios.</p>
+
+            <div class="contract-info">
+                <h3>📋 Resumen del Contrato Firmado</h3>
+                <p><strong>Proyecto:</strong> {{ titulo_diseno }}</p>
+                <p><strong>ID del Contrato:</strong> #{{ contract_id }}</p>
+                <p><strong>Cliente:</strong> {{ client_name }}</p>
+                <p><strong>Estado:</strong> <span style="color: #28a745; font-weight: bold;">✅ Firmado</span></p>
+            </div>
+
+            <div class="attachment-notice">
+                <h4>📎 Contrato Adjunto</h4>
+                <p>Encontrarás el contrato firmado adjunto a este email en formato PDF. Te recomendamos guardarlo en un lugar seguro para futuras referencias.</p>
+            </div>
+
+            <div class="next-steps">
+                <h4>🚀 Próximos Pasos</h4>
+                <ul>
+                    <li>Guarda una copia del contrato firmado en tus archivos</li>
+                    <li>Nuestro equipo comenzará a trabajar en tu proyecto</li>
+                    <li>Recibirás actualizaciones sobre el progreso</li>
+                    <li>Si tienes preguntas, no dudes en contactarnos</li>
+                </ul>
+            </div>
+
+            <div class="contact-info">
+                <h4>📞 ¿Necesitas ayuda?</h4>
+                <p>Si tienes alguna pregunta sobre tu contrato o proyecto,</p>
+                <p>nuestro equipo está disponible para ayudarte.</p>
+            </div>
+
+            <p style="margin-top: 30px;">
+                Gracias por elegirnos para tu proyecto. Estamos emocionados de trabajar contigo y crear algo increíble.
+            </p>
+
+            <p style="margin-top: 20px;">
+                Saludos cordiales,<br>
+                <strong>Equipo de {{ company_name }}</strong>
+            </p>
+        </div>
+
+        <div class="signature-details">
+            <p><strong>Detalles de la firma:</strong> Este contrato fue firmado digitalmente de forma segura. Todos los detalles de la firma han sido registrados con fines de trazabilidad y validación legal.</p>
+        </div>
+
+        <div class="footer">
+            <p>Este email de confirmación fue enviado automáticamente al completar la firma del contrato.</p>
+            <p style="margin-top: 10px;">
+                <strong>{{ company_name }}</strong> - Sistema de Gestión de Contratos
+            </p>
+        </div>
+    </div>
+</body>
+</html>
