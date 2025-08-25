@@ -44,6 +44,11 @@ def create_professional_pdf(pdf_path: str, client_name: str, client_email: str, 
                           titulo_diseno: str = None, puesto_empresa: str = None, politica_confirmacion: str = None,
                           signature_path: str = None, signed_by: str = None, signed_at_str: str = None):
     """Genera un PDF de aceptación de diseño personalizado en formato vertical"""
+    
+    # Debug: Log de parámetros recibidos
+    print(f"DEBUG PDF: signed_by='{signed_by}', signed_at_str='{signed_at_str}', signature_path='{signature_path}'")
+    print(f"DEBUG PDF: puesto_empresa='{puesto_empresa}'")
+    
     c = canvas.Canvas(pdf_path, pagesize=letter)
     width, height = letter
     
@@ -231,7 +236,11 @@ def create_professional_pdf(pdf_path: str, client_name: str, client_email: str, 
     else:
         c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1 * cm, "Málaga, a _____ de _______ de 2025")
     
-    c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1.5 * cm, "Nombre: ________________")
+    # Nombre - rellenar si está firmado, sino dejar en blanco
+    if signed_by:
+        c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1.5 * cm, f"Nombre: {signed_by}")
+    else:
+        c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1.5 * cm, "Nombre: ________________")
     
     # Puesto de empresa al lado - solo mostrar si tiene valor
     if puesto_empresa and puesto_empresa.strip():
@@ -240,7 +249,13 @@ def create_professional_pdf(pdf_path: str, client_name: str, client_email: str, 
     
     # Área de firma
     c.drawString(margin_x + 0.3 * cm, box_y + box_height - 2 * cm, "Firma: __________________")
-    c.drawString(margin_x + 6 * cm, box_y + box_height - 2 * cm, "Fecha: ______________")
+    
+    # Fecha en área de firma - rellenar si está firmado
+    if signed_at_str:
+        fecha_corta = signed_at_str.split(' ')[0]  # Solo la fecha, sin hora
+        c.drawString(margin_x + 6 * cm, box_y + box_height - 2 * cm, f"Fecha: {fecha_corta}")
+    else:
+        c.drawString(margin_x + 6 * cm, box_y + box_height - 2 * cm, "Fecha: ______________")
     
     # Si hay firma digital, mostrarla en la caja
     if signature_path and signed_by:
@@ -257,11 +272,11 @@ def create_professional_pdf(pdf_path: str, client_name: str, client_email: str, 
             sig_img = Image.open(signature_path)
             sig_width, sig_height = sig_img.size
             sig_aspect_ratio = sig_height / sig_width
-            sig_display_width = 3.0 * cm  # Tamaño visible para firma
+            sig_display_width = 5.0 * cm  # Firma mucho más grande y visible
             sig_display_height = sig_display_width * sig_aspect_ratio
             
-            # Ajustar posición para firma más grande
-            sig_x = margin_x + box_width - 4 * cm  # Más espacio desde la derecha
+            # Ajustar posición para firma mucho más grande
+            sig_x = margin_x + box_width - 6 * cm  # Más espacio para firma de 5cm
             sig_y = box_y + 0.5 * cm  # Subir ligeramente
             
             c.drawImage(signature_path, sig_x, sig_y, 
