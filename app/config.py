@@ -15,11 +15,15 @@ class Settings(BaseSettings):
     @field_validator('ALLOWED_ORIGINS', mode='before')
     @classmethod
     def validate_allowed_origins(cls, v):
+        if isinstance(v, list):
+            return v
         if isinstance(v, str):
-            if v == "*":
+            if v.strip() == "*":
                 return ["*"]
-            return [origin.strip() for origin in v.split(',') if origin.strip()]
-        return v
+            # Split by comma and clean up whitespace
+            origins = [origin.strip() for origin in v.split(',') if origin.strip()]
+            return origins if origins else ["*"]
+        return ["*"]
     
     # Email configuration
     SMTP_SERVER: str = "email.sphyrnasolutions.com"

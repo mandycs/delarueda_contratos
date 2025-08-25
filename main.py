@@ -23,24 +23,41 @@ import os
 # Get CORS origins with fallback
 def get_cors_origins():
     try:
+        # First try to get from settings
         origins = settings.ALLOWED_ORIGINS
-        if isinstance(origins, list):
+        if isinstance(origins, list) and origins:
+            logger.info(f"Using settings ALLOWED_ORIGINS: {origins}")
             return origins
         elif origins == "*":
+            logger.info("Using wildcard CORS: *")
             return ["*"]
         else:
+            logger.info(f"Converting single origin to list: {origins}")
             return [origins]
-    except:
-        # Fallback configuration
+    except Exception as e:
+        logger.warning(f"Error reading ALLOWED_ORIGINS from settings: {e}")
+        
+        # Fallback: read directly from environment
+        env_origins = os.getenv("ALLOWED_ORIGINS")
+        if env_origins and env_origins.strip() != "*":
+            origins_list = [origin.strip() for origin in env_origins.split(',') if origin.strip()]
+            logger.info(f"Using environment ALLOWED_ORIGINS: {origins_list}")
+            return origins_list
+        
+        # Final fallback based on environment
         env = os.getenv("ENVIRONMENT", "development")
         if env == "production":
-            return [
-                "https://delarueda-firmacontratosfront-cl4otx.dokploy.cc",
-                "https://firmacontratos.delarueda.es",
-                "https://www.delarueda.es"
+            fallback_origins = [
+                "https://sign.delarueda.es",
+                "https://sign.back.delarueda.es",
+                "https://delarueda-firmacontratosfront-cl4otx.dokploy.cc"
             ]
+            logger.info(f"Using production fallback origins: {fallback_origins}")
+            return fallback_origins
         else:
-            return ["http://localhost:3000", "http://127.0.0.1:3000"]
+            fallback_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+            logger.info(f"Using development fallback origins: {fallback_origins}")
+            return fallback_origins
 
 cors_origins = get_cors_origins()
 logger.info(f"CORS origins configured: {cors_origins}")
@@ -80,12 +97,16 @@ def read_root():
 # Debug endpoint for CORS configuration
 @app.get("/debug/cors")
 def debug_cors():
+    import os
     return {
         "configured_origins": cors_origins,
         "settings_origins": getattr(settings, 'ALLOWED_ORIGINS', 'NOT_SET'),
-        "environment": getattr(settings, 'ENVIRONMENT', 'NOT_SET'),
+        "environment_var": os.getenv("ENVIRONMENT", "NOT_SET"),
+        "allowed_origins_env": os.getenv("ALLOWED_ORIGINS", "NOT_SET"),
+        "settings_environment": getattr(settings, 'ENVIRONMENT', 'NOT_SET'),
         "cors_type": type(cors_origins).__name__,
-        "cors_count": len(cors_origins) if cors_origins else 0
+        "cors_count": len(cors_origins) if cors_origins else 0,
+        "cors_origins_raw": str(cors_origins)
     }
 
 @app.on_event("startup")
