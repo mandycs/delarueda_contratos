@@ -62,6 +62,22 @@ async def create_contract(
     db_contract.unsigned_pdf_path = unsigned_pdf_path
     db.commit()
     db.refresh(db_contract)
+    
+    # Send automatic invitation email to client
+    if db_contract.client_email:
+        try:
+            await email_service.send_contract_invitation(
+                to_email=db_contract.client_email,
+                client_name=db_contract.client_name,
+                contract_id=db_contract.id,
+                titulo_diseno=db_contract.titulo_diseno
+            )
+            print(f"✅ Invitation email sent automatically to {db_contract.client_email}")
+        except Exception as e:
+            # Log the error but don't fail the contract creation
+            print(f"⚠️  Warning: Failed to send automatic invitation email: {str(e)}")
+    else:
+        print(f"⚠️  Warning: No client email provided for contract {db_contract.id}")
 
     return db_contract
 
