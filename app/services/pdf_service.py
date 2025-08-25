@@ -142,8 +142,8 @@ def create_professional_pdf(pdf_path: str, client_name: str, client_email: str, 
         c.drawString(margin_x, current_y, f"[Error al insertar imagen: {e}]")
         current_y -= 1 * cm
     
-    # Definir posición de la caja de firma (más grande para firma enorme)
-    box_height = 5 * cm  # Altura de la caja de firma (aumentada de 3cm a 5cm)
+    # Definir posición de la caja de firma
+    box_height = 3 * cm  # Altura de la caja de firma (volvemos a 3cm)
     box_y = 1.5 * cm  # Posición desde el borde inferior
     
     # Calcular posición de la política: empezar justo encima de la caja
@@ -241,11 +241,11 @@ def create_professional_pdf(pdf_path: str, client_name: str, client_email: str, 
             c.setFont("Esther-Medium", 7)
         except:
             c.setFont("Helvetica-Bold", 7)
-        c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1.2 * cm, f"✓ Firmado por: {signed_by}")
+        c.drawString(margin_x + 0.3 * cm, box_y + box_height - 0.8 * cm, f"✓ Firmado por: {signed_by}")
         if puesto_empresa:
-            c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1.5 * cm, f"Puesto/Empresa: {puesto_empresa}")
+            c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1.1 * cm, f"Puesto/Empresa: {puesto_empresa}")
         if signed_at_str:
-            c.drawString(margin_x + 0.3 * cm, box_y + 0.3 * cm, f"Fecha: {signed_at_str}")
+            c.drawString(margin_x + 0.3 * cm, box_y + 0.2 * cm, f"Fecha: {signed_at_str}")
         
         # Mostrar imagen de firma en la caja (muy pequeña)
         try:
@@ -255,9 +255,9 @@ def create_professional_pdf(pdf_path: str, client_name: str, client_email: str, 
             sig_display_width = 8.0 * cm  # Firma ENORME y muy visible (aumentada de 5cm a 8cm)
             sig_display_height = sig_display_width * sig_aspect_ratio
             
-            # Ajustar posición para firma ENORME
+            # Ajustar posición para firma ENORME en caja normal
             sig_x = margin_x + box_width - 8.5 * cm  # Más espacio para firma de 8cm
-            sig_y = box_y + 1.0 * cm  # Centrar verticalmente en caja más grande
+            sig_y = box_y + 0.2 * cm  # Posición baja en caja de 3cm
             
             c.drawImage(signature_path, sig_x, sig_y, 
                        width=sig_display_width, height=sig_display_height)

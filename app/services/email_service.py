@@ -238,11 +238,16 @@ class EmailService:
             
             attachments = []
             if signed_pdf_path:
+                logger.info(f"Original signed_pdf_path: {signed_pdf_path}")
+                logger.info(f"Current working directory: {os.getcwd()}")
+                
                 # Convert to absolute path if relative
                 if not os.path.isabs(signed_pdf_path):
                     full_path = os.path.abspath(signed_pdf_path)
+                    logger.info(f"Converted relative to absolute: {signed_pdf_path} -> {full_path}")
                 else:
                     full_path = signed_pdf_path
+                    logger.info(f"Path already absolute: {full_path}")
                     
                 logger.info(f"Checking PDF file for attachment: {full_path}")
                 
@@ -338,6 +343,7 @@ class EmailService:
                 else:
                     full_path = signed_pdf_path
                     
+                logger.info(f"Admin notification: Original path: {signed_pdf_path}")
                 logger.info(f"Admin notification: checking PDF file {full_path}")
                 
                 if os.path.exists(full_path):
