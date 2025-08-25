@@ -18,12 +18,38 @@ app = FastAPI(
 
 # CORS middleware - dynamic configuration based on environment
 from app.config import settings
+import os
+
+# Get CORS origins with fallback
+def get_cors_origins():
+    try:
+        origins = settings.ALLOWED_ORIGINS
+        if isinstance(origins, list):
+            return origins
+        elif origins == "*":
+            return ["*"]
+        else:
+            return [origins]
+    except:
+        # Fallback configuration
+        env = os.getenv("ENVIRONMENT", "development")
+        if env == "production":
+            return [
+                "https://delarueda-firmacontratosfront-cl4otx.dokploy.cc",
+                "https://firmacontratos.delarueda.es",
+                "https://www.delarueda.es"
+            ]
+        else:
+            return ["http://localhost:3000", "http://127.0.0.1:3000"]
+
+cors_origins = get_cors_origins()
+logger.info(f"CORS origins configured: {cors_origins}")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_origins=cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -49,6 +75,17 @@ def read_root():
         "version": "1.0.0",
         "status": "healthy",
         "environment": settings.ENVIRONMENT
+    }
+
+# Debug endpoint for CORS configuration
+@app.get("/debug/cors")
+def debug_cors():
+    return {
+        "configured_origins": cors_origins,
+        "settings_origins": getattr(settings, 'ALLOWED_ORIGINS', 'NOT_SET'),
+        "environment": getattr(settings, 'ENVIRONMENT', 'NOT_SET'),
+        "cors_type": type(cors_origins).__name__,
+        "cors_count": len(cors_origins) if cors_origins else 0
     }
 
 @app.on_event("startup")

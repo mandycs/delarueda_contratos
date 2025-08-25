@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings
-from typing import List
+from typing import List, Union
 from pydantic import field_validator
 
 class Settings(BaseSettings):
@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
     # CORS configuration
-    ALLOWED_ORIGINS: str = "*"  # Override in production with specific domains
+    ALLOWED_ORIGINS: Union[str, List[str]] = "*"  # Override in production with specific domains
     ENVIRONMENT: str = "development"  # production, development, testing
     
     @field_validator('ALLOWED_ORIGINS', mode='before')
