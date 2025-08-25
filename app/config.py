@@ -35,6 +35,9 @@ class Settings(BaseSettings):
     SMTP_FROM_EMAIL: str = "system@delarueda.es"
     SMTP_FROM_NAME: str = "Sistema de Contratos - De La Rueda"
     
+    # Admin settings
+    ADMIN_EMAIL: str  # Will be set from environment
+    
     # Frontend URL for links
     FRONTEND_URL: str  # Will be set from environment
 

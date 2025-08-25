@@ -329,7 +329,7 @@ class EmailService:
             bool: True if notification was sent successfully
         """
         try:
-            admin_email = "admin@sphyrnasolutions.com"  # Email del administrador
+            admin_email = settings.ADMIN_EMAIL  # Email del administrador desde variables de entorno
             
             if action == "invitation_sent":
                 subject = f"[Sistema] Invitación enviada - Contrato #{contract_id}"

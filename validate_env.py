@@ -18,7 +18,8 @@ def validate_environment() -> Tuple[bool, List[str]]:
         'DATABASE_URL',
         'SECRET_KEY',
         'SMTP_PASSWORD',
-        'FRONTEND_URL'
+        'FRONTEND_URL',
+        'ADMIN_EMAIL'
     ]
     
     for var in required_vars:
