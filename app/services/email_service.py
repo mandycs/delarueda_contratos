@@ -91,12 +91,16 @@ class EmailService:
                         file_size = os.path.getsize(attachment['path'])
                         logger.info(f"Attachment {i+1} exists, size: {file_size} bytes")
                         with open(attachment['path'], "rb") as f:
-                            part = MIMEBase('application', 'octet-stream')
+                            part = MIMEBase('application', 'pdf')  # Más específico que octet-stream
                             part.set_payload(f.read())
                             encoders.encode_base64(part)
                             part.add_header(
                                 'Content-Disposition',
-                                f'attachment; filename= {attachment["filename"]}'
+                                f'attachment; filename="{attachment["filename"]}"'  # Comillas correctas
+                            )
+                            part.add_header(
+                                'Content-Type',
+                                f'application/pdf; name="{attachment["filename"]}"'
                             )
                             message.attach(part)
                         logger.info(f"Attachment {i+1} added to email successfully")

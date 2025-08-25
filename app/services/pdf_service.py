@@ -225,11 +225,8 @@ def create_professional_pdf(pdf_path: str, client_name: str, client_email: str, 
         c.setFont("Esther-Medium", 7)
     except:
         c.setFont("Helvetica", 7)
-    # Fecha - rellenar si está firmado, sino dejar en blanco
-    if signed_at_str:
-        formatted_date = format_date_spanish(signed_at_str)
-        c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1 * cm, f"Málaga, a {formatted_date}")
-    else:
+    # Fecha - solo en PDFs sin firmar (evitar duplicación)
+    if not signed_by and not signed_at_str:
         c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1 * cm, "Málaga, a _____ de _______ de 2025")
     
     # Solo mostrar campos cuando hay firma digital
@@ -241,11 +238,13 @@ def create_professional_pdf(pdf_path: str, client_name: str, client_email: str, 
             c.setFont("Esther-Medium", 7)
         except:
             c.setFont("Helvetica-Bold", 7)
-        c.drawString(margin_x + 0.3 * cm, box_y + box_height - 0.8 * cm, f"✓ Firmado por: {signed_by}")
+        # Organizar textos sin solapamiento en caja de 3cm
+        c.drawString(margin_x + 0.3 * cm, box_y + box_height - 0.6 * cm, f"✓ Firmado por: {signed_by}")
         if puesto_empresa:
-            c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1.1 * cm, f"Puesto/Empresa: {puesto_empresa}")
+            c.drawString(margin_x + 0.3 * cm, box_y + box_height - 0.9 * cm, f"Puesto/Empresa: {puesto_empresa}")
         if signed_at_str:
-            c.drawString(margin_x + 0.3 * cm, box_y + 0.2 * cm, f"Fecha: {signed_at_str}")
+            formatted_date = format_date_spanish(signed_at_str)
+            c.drawString(margin_x + 0.3 * cm, box_y + 0.3 * cm, f"Málaga, a {formatted_date}")
         
         # Mostrar imagen de firma en la caja (muy pequeña)
         try:
