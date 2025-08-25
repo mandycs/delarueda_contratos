@@ -44,11 +44,6 @@ def create_professional_pdf(pdf_path: str, client_name: str, client_email: str, 
                           titulo_diseno: str = None, puesto_empresa: str = None, politica_confirmacion: str = None,
                           signature_path: str = None, signed_by: str = None, signed_at_str: str = None):
     """Genera un PDF de aceptación de diseño personalizado en formato vertical"""
-    
-    # Debug: Log de parámetros recibidos
-    print(f"DEBUG PDF: signed_by='{signed_by}', signed_at_str='{signed_at_str}', signature_path='{signature_path}'")
-    print(f"DEBUG PDF: puesto_empresa='{puesto_empresa}'")
-    
     c = canvas.Canvas(pdf_path, pagesize=letter)
     width, height = letter
     
@@ -172,7 +167,8 @@ def create_professional_pdf(pdf_path: str, client_name: str, client_email: str, 
             " El tono de la tinta se asemejará a esta muestra. Los colores pueden variar según la técnica y maquinaria empleada."
             " Si requiere pantones específicos, comuníquelo con anterioridad. Su uso implica incremento de precio y está limitado a tiradas offset o serigrafía.\n\n"
             "Puede realizar una modificación previa a la aceptación sin coste. Nuevas modificaciones conllevan costes añadidos."
-            " Los materiales y acabados (laminados, lacas, bordados) pueden alterar la percepción del color."
+            " Los materiales y acabados (laminados, lacas, bordados) pueden alterar la percepción del color.\n\n"
+            "CONSENTIMIENTO: Al firmar este documento, acepto que se registre mi dirección IP y datos de conexión para fines de verificación y trazabilidad legal del contrato."
         )
     
     # Ajustar tamaño de fuente más pequeño para mejor proporción
@@ -236,26 +232,8 @@ def create_professional_pdf(pdf_path: str, client_name: str, client_email: str, 
     else:
         c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1 * cm, "Málaga, a _____ de _______ de 2025")
     
-    # Nombre - rellenar si está firmado, sino dejar en blanco
-    if signed_by:
-        c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1.5 * cm, f"Nombre: {signed_by}")
-    else:
-        c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1.5 * cm, "Nombre: ________________")
-    
-    # Puesto de empresa al lado - solo mostrar si tiene valor
-    if puesto_empresa and puesto_empresa.strip():
-        c.drawString(margin_x + 6 * cm, box_y + box_height - 1.5 * cm, f"Puesto: {puesto_empresa}")
-    # Si no hay puesto, no mostrar nada (queda más limpio)
-    
-    # Área de firma
-    c.drawString(margin_x + 0.3 * cm, box_y + box_height - 2 * cm, "Firma: __________________")
-    
-    # Fecha en área de firma - rellenar si está firmado
-    if signed_at_str:
-        fecha_corta = signed_at_str.split(' ')[0]  # Solo la fecha, sin hora
-        c.drawString(margin_x + 6 * cm, box_y + box_height - 2 * cm, f"Fecha: {fecha_corta}")
-    else:
-        c.drawString(margin_x + 6 * cm, box_y + box_height - 2 * cm, "Fecha: ______________")
+    # Solo mostrar campos cuando hay firma digital
+    # Si no hay firma, no mostrar campos vacíos
     
     # Si hay firma digital, mostrarla en la caja
     if signature_path and signed_by:
