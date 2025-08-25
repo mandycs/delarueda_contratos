@@ -11,7 +11,7 @@ from app.auth import get_password_hash
 
 def list_users(db: Session):
     """Listar todos los usuarios"""
-    users = db.query(models.User).all()
+    users = db.query(models.DBUser).all()
     
     if not users:
         print("📋 No hay usuarios registrados en el sistema.")
