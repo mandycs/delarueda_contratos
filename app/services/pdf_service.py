@@ -15,6 +15,30 @@ DESIGN_IMAGE_MAX_HEIGHT = 13 * cm  # Maximum height for design images (reducido 
 LOGO_WIDTH = 3 * cm  # Company logo width (reduced for more discretion)
 LOGO_PATH = "storage/logo.png"  # Path to company logo
 
+def format_date_spanish(date_str: str) -> str:
+    """Convert date string to Spanish format for contract"""
+    try:
+        from datetime import datetime
+        # Parse date string (format: dd/mm/yyyy hh:mm)
+        if '/' in date_str and len(date_str) > 10:
+            date_part = date_str.split(' ')[0]  # Get only date part
+            day, month, year = date_part.split('/')
+        else:
+            # Fallback for other formats
+            return f"_____ de _______ de {datetime.now().year}"
+        
+        months_spanish = [
+            "", "enero", "febrero", "marzo", "abril", "mayo", "junio",
+            "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+        ]
+        
+        month_name = months_spanish[int(month)]
+        return f"{int(day)} de {month_name} de {year}"
+    except:
+        # Fallback if parsing fails
+        from datetime import datetime
+        return f"_____ de _______ de {datetime.now().year}"
+
 
 def create_professional_pdf(pdf_path: str, client_name: str, client_email: str, design_image_path: str, 
                           titulo_diseno: str = None, puesto_empresa: str = None, politica_confirmacion: str = None,
@@ -200,15 +224,19 @@ def create_professional_pdf(pdf_path: str, client_name: str, client_email: str, 
         c.setFont("Esther-Medium", 7)
     except:
         c.setFont("Helvetica", 7)
-    c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1 * cm, "Málaga, a _____ de _______ de 2025")
+    # Fecha - rellenar si está firmado, sino dejar en blanco
+    if signed_at_str:
+        formatted_date = format_date_spanish(signed_at_str)
+        c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1 * cm, f"Málaga, a {formatted_date}")
+    else:
+        c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1 * cm, "Málaga, a _____ de _______ de 2025")
     
     c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1.5 * cm, "Nombre: ________________")
     
-    # Puesto de empresa al lado
-    if puesto_empresa:
+    # Puesto de empresa al lado - solo mostrar si tiene valor
+    if puesto_empresa and puesto_empresa.strip():
         c.drawString(margin_x + 6 * cm, box_y + box_height - 1.5 * cm, f"Puesto: {puesto_empresa}")
-    else:
-        c.drawString(margin_x + 6 * cm, box_y + box_height - 1.5 * cm, "Puesto: ______________")
+    # Si no hay puesto, no mostrar nada (queda más limpio)
     
     # Área de firma
     c.drawString(margin_x + 0.3 * cm, box_y + box_height - 2 * cm, "Firma: __________________")
@@ -229,11 +257,12 @@ def create_professional_pdf(pdf_path: str, client_name: str, client_email: str, 
             sig_img = Image.open(signature_path)
             sig_width, sig_height = sig_img.size
             sig_aspect_ratio = sig_height / sig_width
-            sig_display_width = 1.5 * cm  # Aún más pequeña
+            sig_display_width = 3.0 * cm  # Tamaño visible para firma
             sig_display_height = sig_display_width * sig_aspect_ratio
             
-            sig_x = margin_x + box_width - 2.5 * cm
-            sig_y = box_y + 0.3 * cm
+            # Ajustar posición para firma más grande
+            sig_x = margin_x + box_width - 4 * cm  # Más espacio desde la derecha
+            sig_y = box_y + 0.5 * cm  # Subir ligeramente
             
             c.drawImage(signature_path, sig_x, sig_y, 
                        width=sig_display_width, height=sig_display_height)
