@@ -80,6 +80,7 @@ async def sign_contract(
     contract_id: int,
     signature_image: UploadFile = File(...),
     signed_by: str = Form(...),
+    puesto_empresa: str = Form(...),
     db: Session = Depends(get_db)
 ):
     db_contract = crud.get_contract(db, contract_id=contract_id)
@@ -101,7 +102,7 @@ async def sign_contract(
             client_email=db_contract.client_email,
             design_image_path=db_contract.design_image_path,
             titulo_diseno=db_contract.titulo_diseno,
-            puesto_empresa=db_contract.puesto_empresa,
+            puesto_empresa=puesto_empresa,  # Usar el valor del formulario, no de la BD
             politica_confirmacion=db_contract.politica_confirmacion,
             signature_path=signature_path,
             signed_by=signed_by,

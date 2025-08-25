@@ -84,8 +84,12 @@ class EmailService:
 
             # Add attachments if provided
             if attachments:
-                for attachment in attachments:
+                logger.info(f"Processing {len(attachments)} attachments")
+                for i, attachment in enumerate(attachments):
+                    logger.info(f"Attachment {i+1}: {attachment['path']} -> {attachment['filename']}")
                     if os.path.exists(attachment['path']):
+                        file_size = os.path.getsize(attachment['path'])
+                        logger.info(f"Attachment {i+1} exists, size: {file_size} bytes")
                         with open(attachment['path'], "rb") as f:
                             part = MIMEBase('application', 'octet-stream')
                             part.set_payload(f.read())
@@ -95,6 +99,9 @@ class EmailService:
                                 f'attachment; filename= {attachment["filename"]}'
                             )
                             message.attach(part)
+                        logger.info(f"Attachment {i+1} added to email successfully")
+                    else:
+                        logger.error(f"Attachment file not found: {attachment['path']}")
 
             # Send email using aiosmtplib
             if self.use_ssl:
@@ -237,15 +244,22 @@ class EmailService:
                 else:
                     full_path = signed_pdf_path
                     
+                logger.info(f"Checking PDF file for attachment: {full_path}")
+                
                 if os.path.exists(full_path):
+                    file_size = os.path.getsize(full_path)
+                    logger.info(f"PDF file found, size: {file_size} bytes")
                     attachments.append({
                         'path': full_path,
                         'filename': f'contrato_{contract_id}_firmado.pdf'
                     })
                 else:
-                    logger.warning(f"PDF file not found for attachment: {full_path}")
+                    logger.error(f"PDF file not found for attachment: {full_path}")
+            else:
+                logger.warning(f"No signed_pdf_path provided for contract {contract_id}")
             
             # Enviar confirmación al cliente
+            logger.info(f"Sending email to client with {len(attachments)} attachments")
             client_success = await self.send_email(
                 to_email=to_email,
                 subject=subject,
@@ -324,14 +338,19 @@ class EmailService:
                 else:
                     full_path = signed_pdf_path
                     
+                logger.info(f"Admin notification: checking PDF file {full_path}")
+                
                 if os.path.exists(full_path):
+                    file_size = os.path.getsize(full_path)
+                    logger.info(f"Admin notification: PDF found, size {file_size} bytes")
                     attachments.append({
                         'path': full_path,
                         'filename': f'contrato_{contract_id}_firmado.pdf'
                     })
                 else:
-                    logger.warning(f"PDF file not found for admin notification: {full_path}")
+                    logger.error(f"PDF file not found for admin notification: {full_path}")
             
+            logger.info(f"Sending admin notification with {len(attachments)} attachments")
             return await self.send_email(
                 to_email=admin_email,
                 subject=subject,
