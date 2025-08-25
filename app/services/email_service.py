@@ -230,11 +230,20 @@ class EmailService:
             subject = f"Contrato Firmado - {titulo_diseno or f'#{contract_id}'}"
             
             attachments = []
-            if signed_pdf_path and os.path.exists(signed_pdf_path):
-                attachments.append({
-                    'path': signed_pdf_path,
-                    'filename': f'contrato_{contract_id}_firmado.pdf'
-                })
+            if signed_pdf_path:
+                # Convert to absolute path if relative
+                if not os.path.isabs(signed_pdf_path):
+                    full_path = os.path.abspath(signed_pdf_path)
+                else:
+                    full_path = signed_pdf_path
+                    
+                if os.path.exists(full_path):
+                    attachments.append({
+                        'path': full_path,
+                        'filename': f'contrato_{contract_id}_firmado.pdf'
+                    })
+                else:
+                    logger.warning(f"PDF file not found for attachment: {full_path}")
             
             # Enviar confirmación al cliente
             client_success = await self.send_email(
@@ -308,11 +317,20 @@ class EmailService:
             
             # Para contratos firmados, adjuntar el PDF
             attachments = []
-            if action == "contract_signed" and signed_pdf_path and os.path.exists(signed_pdf_path):
-                attachments.append({
-                    'path': signed_pdf_path,
-                    'filename': f'contrato_{contract_id}_firmado.pdf'
-                })
+            if action == "contract_signed" and signed_pdf_path:
+                # Convert to absolute path if relative
+                if not os.path.isabs(signed_pdf_path):
+                    full_path = os.path.abspath(signed_pdf_path)
+                else:
+                    full_path = signed_pdf_path
+                    
+                if os.path.exists(full_path):
+                    attachments.append({
+                        'path': full_path,
+                        'filename': f'contrato_{contract_id}_firmado.pdf'
+                    })
+                else:
+                    logger.warning(f"PDF file not found for admin notification: {full_path}")
             
             return await self.send_email(
                 to_email=admin_email,
