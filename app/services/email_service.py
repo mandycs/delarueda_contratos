@@ -3,6 +3,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
+from email.mime.application import MIMEApplication
 from email import encoders
 import aiosmtplib
 from jinja2 import Environment, BaseLoader
@@ -67,8 +68,13 @@ class EmailService:
             bool: True if email was sent successfully
         """
         try:
-            # Create message
-            message = MIMEMultipart("alternative")
+            # Create message - use mixed for attachments, not alternative
+            if attachments:
+                message = MIMEMultipart("mixed")
+                # Create alternative part for text/html content
+                content_part = MIMEMultipart("alternative")
+            else:
+                message = MIMEMultipart("alternative")
             message["Subject"] = subject
             message["From"] = f"{self.from_name} <{self.from_email}>"
             message["To"] = to_email
@@ -76,11 +82,18 @@ class EmailService:
             # Add text content if provided
             if text_content:
                 text_part = MIMEText(text_content, "plain", "utf-8")
-                message.attach(text_part)
+                if attachments:
+                    content_part.attach(text_part)
+                else:
+                    message.attach(text_part)
 
             # Add HTML content
             html_part = MIMEText(html_content, "html", "utf-8")
-            message.attach(html_part)
+            if attachments:
+                content_part.attach(html_part)
+                message.attach(content_part)
+            else:
+                message.attach(html_part)
 
             # Add attachments if provided
             if attachments:
@@ -91,16 +104,15 @@ class EmailService:
                         file_size = os.path.getsize(attachment['path'])
                         logger.info(f"Attachment {i+1} exists, size: {file_size} bytes")
                         with open(attachment['path'], "rb") as f:
-                            part = MIMEBase('application', 'pdf')  # Más específico que octet-stream
-                            part.set_payload(f.read())
-                            encoders.encode_base64(part)
-                            part.add_header(
-                                'Content-Disposition',
-                                f'attachment; filename="{attachment["filename"]}"'  # Comillas correctas
+                            # Use MIMEApplication for better PDF handling
+                            part = MIMEApplication(
+                                f.read(),
+                                _subtype='pdf',
+                                name=attachment["filename"]
                             )
                             part.add_header(
-                                'Content-Type',
-                                f'application/pdf; name="{attachment["filename"]}"'
+                                'Content-Disposition',
+                                f'attachment; filename="{attachment["filename"]}"'
                             )
                             message.attach(part)
                         logger.info(f"Attachment {i+1} added to email successfully")

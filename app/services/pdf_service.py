@@ -238,10 +238,10 @@ def create_professional_pdf(pdf_path: str, client_name: str, client_email: str, 
             c.setFont("Esther-Medium", 7)
         except:
             c.setFont("Helvetica-Bold", 7)
-        # Organizar textos sin solapamiento en caja de 3cm
-        c.drawString(margin_x + 0.3 * cm, box_y + box_height - 0.6 * cm, f"✓ Firmado por: {signed_by}")
+        # Organizar textos sin solapamiento en caja de 3cm (bajados un poco)
+        c.drawString(margin_x + 0.3 * cm, box_y + box_height - 0.8 * cm, f"✓ Firmado por: {signed_by}")
         if puesto_empresa:
-            c.drawString(margin_x + 0.3 * cm, box_y + box_height - 0.9 * cm, f"Puesto/Empresa: {puesto_empresa}")
+            c.drawString(margin_x + 0.3 * cm, box_y + box_height - 1.1 * cm, f"Puesto/Empresa: {puesto_empresa}")
         if signed_at_str:
             formatted_date = format_date_spanish(signed_at_str)
             c.drawString(margin_x + 0.3 * cm, box_y + 0.3 * cm, f"Málaga, a {formatted_date}")
