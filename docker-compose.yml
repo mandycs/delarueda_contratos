@@ -36,6 +36,7 @@ services:
       
       # Email configuration
       SMTP_PASSWORD: ${SMTP_PASSWORD}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
     volumes:
       - app_storage:/app/storage
